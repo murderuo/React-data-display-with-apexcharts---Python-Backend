@@ -8,7 +8,18 @@ app = FastAPI()
 infilation=ExploreData()
 infilation_data=infilation.get_data()
 
+origins = [
+    "http://localhost:3000",
+    "localhost:3000"
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 
@@ -23,7 +34,7 @@ def index():
 
 @app.get("/api/v1/infilation/{year_id}")
 def get_year_inflation(year_id: int):
-    if year_id >= 2000 and year_id <= 2022:
+    if year_id >= 2005 and year_id <= 2022:
         for d in infilation_data:
             if d["year"] == year_id:
                 return d
@@ -33,7 +44,7 @@ def get_year_inflation(year_id: int):
 
 @app.get("/api/v1/infilation/{year_id}/{month_id}")
 def get_month_inflation(month_id: int, year_id: int):
-    if year_id >= 2000 and year_id <= 2022:
+    if year_id >= 2005 and year_id <= 2022:
         year_inflation_data=get_year_inflation(year_id)
         if month_id>=1 and month_id<=12:
             for month_data in year_inflation_data['month']:
